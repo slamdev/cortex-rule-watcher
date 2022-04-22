@@ -27,6 +27,7 @@ jobs:
         run: |
           echo "::set-output name=go-build::$(go env GOCACHE)"
           echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+          echo "::set-output name=envtest::internal/testdata/$(go env GOOS)"
 
       - name: Restore Go build cache
         uses: actions/cache@v3
@@ -43,8 +44,8 @@ jobs:
       - name: Restore envtest deps cache
         uses: actions/cache@v3
         with:
-          path: internal/testdata/${{ runner.os.lowercase }}
-          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/internal/testdata/get-binaries.sh') }}
+          path: ${{ steps.go-cache-paths.outputs.envtest }}
+          key: ${{ runner.os }}-envtest-${{ hashFiles('**/internal/testdata/get-binaries.sh') }}
 
       - name: Download deps
         run: go mod download
@@ -62,9 +63,9 @@ jobs:
         run: docker build . -t slamdev/cortex-rule-watcher
 
       - name: Login to Dockerhub
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u slamdev --password-stdin
 
       - name: Push Docker image
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: docker push slamdev/cortex-rule-watcher:latest
