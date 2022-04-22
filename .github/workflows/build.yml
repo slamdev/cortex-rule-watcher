@@ -1,0 +1,70 @@
+name: build
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "!*"
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build
+    steps:
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure cache paths
+        id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Restore Go build cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Restore go mod cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+
+      - name: Restore envtest deps cache
+        uses: actions/cache@v3
+        with:
+          path: internal/testdata/${{ runner.os }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/internal/testdata/get-binaries.sh') }}
+
+      - name: Download deps
+        run: go mod download
+
+      - name: Download envtest deps
+        run: (cd internal/testdata && ./get-binaries.sh)
+
+      - name: Test controller
+        run: go test ./internal/...
+
+      - name: Build controller
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o controller ./cmd/main.go
+
+      - name: Build docker image
+        run: docker build . -t slamdev/cortex-rule-watcher
+
+      - name: Docker Login
+        if: github.ref == 'refs/heads/master'
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u slamdev --password-stdin
+
+      - name: Push docker image
+        if: github.ref == 'refs/heads/master'
+        run: docker push slamdev/cortex-rule-watcher:latest
