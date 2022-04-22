@@ -2,12 +2,12 @@ name: build
 on:
   push:
     branches:
-      - "master"
+      - main
     tags:
-      - "!*"
+      - '!*'
   pull_request:
     branches:
-      - '*'
+      - *
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
           path: ${{ steps.go-cache-paths.outputs.go-build }}
           key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
 
-      - name: Restore go mod cache
+      - name: Restore Go mod cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.go-cache-paths.outputs.go-mod }}
@@ -43,7 +43,7 @@ jobs:
       - name: Restore envtest deps cache
         uses: actions/cache@v3
         with:
-          path: internal/testdata/${{ runner.os }}
+          path: internal/testdata/${{ runner.os.lowercase }}
           key: ${{ runner.os }}-go-mod-${{ hashFiles('**/internal/testdata/get-binaries.sh') }}
 
       - name: Download deps
@@ -58,13 +58,13 @@ jobs:
       - name: Build controller
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o controller ./cmd/main.go
 
-      - name: Build docker image
+      - name: Build Docker image
         run: docker build . -t slamdev/cortex-rule-watcher
 
-      - name: Docker Login
+      - name: Login to Dockerhub
         if: github.ref == 'refs/heads/master'
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u slamdev --password-stdin
 
-      - name: Push docker image
+      - name: Push Docker image
         if: github.ref == 'refs/heads/master'
         run: docker push slamdev/cortex-rule-watcher:latest
