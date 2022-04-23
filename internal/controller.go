@@ -33,6 +33,7 @@ func (r *PrometheusRuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 			if err := r.Syncer.delete(rule); err != nil {
 				return ctrl.Result{}, fmt.Errorf("failed to sync rule deletion event; %w", err)
 			}
+			l.Info("rule deleted")
 			return ctrl.Result{}, nil
 		}
 		l.Error(err, "unable to fetch rule")
@@ -42,6 +43,7 @@ func (r *PrometheusRuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	if err := r.Syncer.replace(rule); err != nil {
 		return ctrl.Result{}, fmt.Errorf("failed to sync rule upsert event; %w", err)
 	}
+	l.Info("rule replaced")
 
 	return ctrl.Result{}, nil
 }
