@@ -23,7 +23,13 @@ func NewSyncer(rulePath string) Syncer {
 }
 
 func (s *syncer) replace(rule monitoring.PrometheusRule) error {
-	out, err := yaml.Marshal(rule.Spec)
+	spec := rule.Spec.DeepCopy()
+	// prepend rule namespace-name to the group name to make groups unique
+	for i := range spec.Groups {
+		spec.Groups[i].Name = fmt.Sprintf("%s-%s.%s", rule.Namespace, rule.Name, spec.Groups[i].Name)
+	}
+
+	out, err := yaml.Marshal(spec)
 	if err != nil {
 		return fmt.Errorf("failed to marshal rule to yaml; %w", err)
 	}
