@@ -21,7 +21,7 @@ var (
 	}}}
 	specYaml = `
 groups:
-  - name: default-test.rule-example
+  - name: default-test-rule.example
     rules:
     - record: job:http_inprogress_requests:sum
       expr: sum by (job) (http_inprogress_requests)
