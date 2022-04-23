@@ -37,6 +37,8 @@ func main() {
 	var rulePath string
 	flag.StringVar(&rulePath, "rule-path", "/rules", "File path to store temporary rule files for the prometheus rule managers.")
 
+	syncer := internal.NewSyncer(rulePath)
+
 	opts := zap.Options{
 		Development: true,
 	}
@@ -56,9 +58,9 @@ func main() {
 	}
 
 	if err = (&internal.PrometheusRuleReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		RulePath: rulePath,
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		Syncer: syncer,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "PrometheusRule")
 		os.Exit(1)

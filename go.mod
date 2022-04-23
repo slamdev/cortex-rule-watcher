@@ -3,7 +3,7 @@ module github.com/slamdev/cortex-rule-watcher
 go 1.18
 
 require (
-	github.com/onsi/ginkgo/v2 v2.1.3
+	github.com/golang/mock v1.6.0
 	github.com/onsi/gomega v1.19.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.56.0
 	k8s.io/apimachinery v0.23.0
