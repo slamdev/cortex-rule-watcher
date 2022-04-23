@@ -5,7 +5,6 @@
 package internal
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,29 +35,29 @@ func (m *MockSyncer) EXPECT() *MockSyncerMockRecorder {
 }
 
 // delete mocks base method.
-func (m *MockSyncer) delete(ctx context.Context, rule v1.PrometheusRule) error {
+func (m *MockSyncer) delete(rule v1.PrometheusRule) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "delete", ctx, rule)
+	ret := m.ctrl.Call(m, "delete", rule)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // delete indicates an expected call of delete.
-func (mr *MockSyncerMockRecorder) delete(ctx, rule interface{}) *gomock.Call {
+func (mr *MockSyncerMockRecorder) delete(rule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "delete", reflect.TypeOf((*MockSyncer)(nil).delete), ctx, rule)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "delete", reflect.TypeOf((*MockSyncer)(nil).delete), rule)
 }
 
 // replace mocks base method.
-func (m *MockSyncer) replace(ctx context.Context, rule v1.PrometheusRule) error {
+func (m *MockSyncer) replace(rule v1.PrometheusRule) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "replace", ctx, rule)
+	ret := m.ctrl.Call(m, "replace", rule)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // replace indicates an expected call of replace.
-func (mr *MockSyncerMockRecorder) replace(ctx, rule interface{}) *gomock.Call {
+func (mr *MockSyncerMockRecorder) replace(rule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "replace", reflect.TypeOf((*MockSyncer)(nil).replace), ctx, rule)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "replace", reflect.TypeOf((*MockSyncer)(nil).replace), rule)
 }

@@ -38,7 +38,7 @@ func Test_ShouldReconcile(t *testing.T) {
 	}
 
 	// Verify rule creation
-	syncer.EXPECT().replace(gomock.Any(), gomock.All(matchRule(rule)))
+	syncer.EXPECT().replace(gomock.All(matchRule(rule)))
 	Expect(k8sClient.Create(ctx, rule)).Should(Succeed())
 
 	// Verify rule update
@@ -49,13 +49,13 @@ func Test_ShouldReconcile(t *testing.T) {
 			Expr:   intstr.FromInt(1),
 		}},
 	}}}
-	syncer.EXPECT().replace(gomock.Any(), gomock.All(matchRule(rule)))
+	syncer.EXPECT().replace(gomock.All(matchRule(rule)))
 	Expect(k8sClient.Update(ctx, rule)).Should(Succeed())
 
 	// Verify rule deletion
 	rule.Spec = monitoring.PrometheusRuleSpec{}
 	Expect(k8sClient.Delete(ctx, rule)).Should(Succeed())
-	syncer.EXPECT().delete(gomock.Any(), gomock.All(matchRule(rule)))
+	syncer.EXPECT().delete(gomock.All(matchRule(rule)))
 }
 
 func setup(t *testing.T) (client.Client, *MockSyncer, context.Context) {

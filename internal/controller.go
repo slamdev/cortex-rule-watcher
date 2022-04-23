@@ -30,7 +30,7 @@ func (r *PrometheusRuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 					Namespace: req.Namespace,
 				},
 			}
-			if err := r.Syncer.delete(ctx, rule); err != nil {
+			if err := r.Syncer.delete(rule); err != nil {
 				return ctrl.Result{}, fmt.Errorf("failed to sync rule deletion event; %w", err)
 			}
 			return ctrl.Result{}, nil
@@ -39,7 +39,7 @@ func (r *PrometheusRuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		return ctrl.Result{}, err
 	}
 
-	if err := r.Syncer.replace(ctx, rule); err != nil {
+	if err := r.Syncer.replace(rule); err != nil {
 		return ctrl.Result{}, fmt.Errorf("failed to sync rule upsert event; %w", err)
 	}
 
