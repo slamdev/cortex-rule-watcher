@@ -54,8 +54,8 @@ func Test_ShouldReconcile(t *testing.T) {
 
 	// Verify rule deletion
 	rule.Spec = monitoring.PrometheusRuleSpec{}
-	Expect(k8sClient.Delete(ctx, rule)).Should(Succeed())
 	syncer.EXPECT().delete(gomock.All(matchRule(rule)))
+	Expect(k8sClient.Delete(ctx, rule)).Should(Succeed())
 }
 
 func setup(t *testing.T) (client.Client, *MockSyncer, context.Context) {
