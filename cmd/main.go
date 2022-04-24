@@ -37,13 +37,13 @@ func main() {
 	var rulePath string
 	flag.StringVar(&rulePath, "rule-path", "/rules", "File path to store temporary rule files for the prometheus rule managers.")
 
-	syncer := internal.NewSyncer(rulePath)
-
 	opts := zap.Options{
 		Development: true,
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
+
+	syncer := internal.NewSyncer(rulePath)
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
