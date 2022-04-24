@@ -48,7 +48,7 @@ spec:
       containers:
         - name: cortex-rule-watcher
           args:
-            - --rule-path=/rules
+            - --rule-path=/local-rules
           image: slamdev/cortex-rule-watcher:latest
           imagePullPolicy: Always
           ports:
@@ -74,13 +74,14 @@ spec:
               memory: 16Mi
           volumeMounts:
             - name: rules
-              mountPath: /rules
+              mountPath: /local-rules
         - name: ruler
           args:
             - -target=ruler
             - -auth.multitenancy-enabled=false
             - -ruler.poll-interval=5s
-            - -ruler.rule-path=/rules
+            - -ruler-storage.backend=local
+            - -ruler-storage.local.directory=/local-rules
           image: grafana/mimir:2.0.0
           ports:
             - name: http-metrics
@@ -99,7 +100,7 @@ spec:
               memory: 32Mi
           volumeMounts:
             - name: rules
-              mountPath: /rules
+              mountPath: /local-rules/fake
       volumes:
         - name: rules
           emptyDir: { }

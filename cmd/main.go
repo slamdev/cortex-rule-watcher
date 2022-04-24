@@ -35,7 +35,7 @@ func main() {
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 
 	var rulePath string
-	flag.StringVar(&rulePath, "rule-path", "/rules", "File path to store temporary rule files for the prometheus rule managers.")
+	flag.StringVar(&rulePath, "rule-path", "/local-rules", "File path to store temporary rule files for the prometheus rule managers.")
 
 	opts := zap.Options{
 		Development: true,
