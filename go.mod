@@ -7,7 +7,7 @@ require (
 	github.com/onsi/gomega v1.19.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.56.0
 	k8s.io/apimachinery v0.23.6
-	k8s.io/client-go v0.23.6
+	k8s.io/client-go v11.0.0+incompatible
 	sigs.k8s.io/controller-runtime v0.11.2
 	sigs.k8s.io/yaml v1.3.0
 )
